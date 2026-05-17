@@ -93,6 +93,9 @@ This file contains:
 - `LiteLLMProvider`
 - `VLLMProvider`
 
+The non-mock providers use standard-library HTTP calls and expect compatible
+JSON APIs. They are optional and require your own endpoint/API key.
+
 ## Production Swap
 
 Replace `MockProvider` with:
@@ -122,6 +125,10 @@ print(result)
 
 For production, implement the `complete(...)` method on one provider adapter and
 return a normalized `ModelResponse`.
+
+For an OpenAI-compatible local/vLLM endpoint, configure `VLLMProvider`. For a
+LiteLLM gateway, configure `LiteLLMProvider`. For OpenAI Responses API, configure
+`OpenAIResponsesProvider`.
 
 ## Where LangGraph Fits
 

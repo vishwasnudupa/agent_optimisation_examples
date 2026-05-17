@@ -53,7 +53,11 @@ agent optimisation/
 ├── README.md
 ├── MASTER_README.md
 ├── GLOSSARY.md
+├── TECHNIQUE_INDEX.md
+├── agentopt.py
 ├── pyproject.toml
+├── config/
+│   └── examples.yaml
 ├── .agents/
 │   └── plugins/
 │       └── marketplace.json
@@ -61,7 +65,12 @@ agent optimisation/
 │   └── run_all.py
 ├── shared/
 │   ├── __init__.py
-│   └── agent_runtime.py
+│   ├── agent_runtime.py
+│   └── workflow.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_plugin_workflow.py
+│   └── test_shared_runtime.py
 ├── techniques/
 │   ├── adaptive_context_injection/
 │   │   ├── README.md
@@ -222,6 +231,8 @@ Important objects:
 
 - `Agent`: wraps a handler and returns structured output with agent name, model
   tier, latency, and result.
+- `AgentResult`: typed result object for agent execution.
+- `ValidationResult`: typed result object for validation helpers.
 - `demo_result`: standard output wrapper for each example.
 - `Telemetry`: records calls, latency, cache hits, and errors.
 - `SimpleCache`: tiny in-memory cache.
@@ -233,6 +244,40 @@ Important objects:
 
 Discovers and runs every `techniques/*/agent_example.py` file. Use this after
 changes to make sure all examples still work.
+
+### `shared/workflow.py`
+
+Reusable workflow primitives:
+
+- `Step`
+- `Pipeline`
+- `ParallelFanOut`
+- `ApprovalGate`
+- `StateMachine`
+
+These are useful when moving from one-off examples to real orchestration code.
+
+### `agentopt.py`
+
+Project CLI:
+
+```powershell
+python .\agentopt.py list
+python .\agentopt.py run micro_agent_splitting
+python .\agentopt.py run-all
+python .\agentopt.py explain semantic_caching
+python .\agentopt.py plugin-demo
+python .\agentopt.py generate-index
+```
+
+### `TECHNIQUE_INDEX.md`
+
+Generated index of every technique folder and its short description. Regenerate
+it with:
+
+```powershell
+python .\agentopt.py generate-index
+```
 
 ### `plugins/agent-optimization-runtime/runtime/provider_adapters.py`
 
@@ -368,6 +413,7 @@ Let the model handle:
 After any change, run:
 
 ```powershell
+python -m unittest discover -s tests
 python .\scripts\run_all.py
 python .\plugins\agent-optimization-runtime\examples\realistic_workflow_demo.py
 ```

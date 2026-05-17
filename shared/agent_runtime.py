@@ -12,29 +12,81 @@ from typing import Any, Callable, Iterable
 
 
 @dataclass
+class AgentResult:
+    agent: str
+    model: str
+    latency_ms: float
+    output: Any
+    error: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        payload = {
+            "agent": self.agent,
+            "model": self.model,
+            "latency_ms": self.latency_ms,
+            "output": self.output,
+        }
+        if self.error:
+            payload["error"] = self.error
+        return payload
+
+
+@dataclass
+class ValidationResult:
+    valid: bool
+    errors: list[str] = field(default_factory=list)
+
+
+@dataclass
 class Agent:
     name: str
     model_size: str
     handler: Callable[[Any], Any]
+    retries: int = 0
 
     def run(self, task: Any) -> Any:
         started = time.perf_counter()
-        output = self.handler(task)
-        elapsed_ms = (time.perf_counter() - started) * 1000
-        return {
-            "agent": self.name,
-            "model": self.model_size,
-            "latency_ms": round(elapsed_ms, 2),
-            "output": output,
-        }
+        attempts = 0
+        while True:
+            try:
+                output = self.handler(task)
+                elapsed_ms = (time.perf_counter() - started) * 1000
+                return AgentResult(
+                    agent=self.name,
+                    model=self.model_size,
+                    latency_ms=round(elapsed_ms, 2),
+                    output=output,
+                ).as_dict()
+            except Exception as exc:
+                attempts += 1
+                if attempts > self.retries:
+                    elapsed_ms = (time.perf_counter() - started) * 1000
+                    return AgentResult(
+                        agent=self.name,
+                        model=self.model_size,
+                        latency_ms=round(elapsed_ms, 2),
+                        output=None,
+                        error=str(exc),
+                    ).as_dict()
 
 
-def demo_result(technique: str, optimization: str, result: Any) -> dict[str, Any]:
-    return {
+def demo_result(
+    technique: str,
+    optimization: str,
+    result: Any,
+    scenario: str | None = None,
+    pipeline_stage: str | None = None,
+) -> dict[str, Any]:
+    payload = {
         "technique": technique,
         "optimization_used": optimization,
         "result": result,
     }
+    if scenario:
+        payload["scenario"] = scenario
+    if pipeline_stage:
+        payload["pipeline_stage"] = pipeline_stage
+    return payload
 
 
 @dataclass
@@ -84,6 +136,15 @@ def validate_required_keys(payload: dict[str, Any], keys: Iterable[str]) -> None
     missing = [key for key in keys if key not in payload]
     if missing:
         raise ValueError(f"missing required keys: {missing}")
+
+
+def validate_required_keys_result(
+    payload: dict[str, Any], keys: Iterable[str]
+) -> ValidationResult:
+    missing = [key for key in keys if key not in payload]
+    if missing:
+        return ValidationResult(valid=False, errors=[f"missing required keys: {missing}"])
+    return ValidationResult(valid=True)
 
 
 def compact_messages(messages: list[str], keep_last: int = 3) -> list[str]:

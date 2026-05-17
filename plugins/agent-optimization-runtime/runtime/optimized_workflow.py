@@ -6,7 +6,10 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from provider_adapters import ModelProvider, ModelRequest
+try:
+    from .provider_adapters import ModelProvider, ModelRequest
+except ImportError:
+    from provider_adapters import ModelProvider, ModelRequest
 
 
 @dataclass

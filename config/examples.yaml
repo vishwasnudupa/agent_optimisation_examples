@@ -1,0 +1,12 @@
+models:
+  router: small-router-model
+  fast: small-fast-model
+  reasoning: large-reasoning-model
+risk_terms:
+  - production
+  - delete
+  - flash
+  - payment
+scenarios:
+  firmware_debug: Debug UART RX overflow in staging firmware
+  production_flash: Prepare production firmware flash plan

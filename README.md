@@ -48,6 +48,16 @@ Run the realistic plugin-style workflow:
 python .\plugins\agent-optimization-runtime\examples\realistic_workflow_demo.py
 ```
 
+Use the CLI:
+
+```powershell
+python .\agentopt.py list
+python .\agentopt.py run micro_agent_splitting
+python .\agentopt.py run-all
+python .\agentopt.py explain semantic_caching
+python .\agentopt.py plugin-demo
+```
+
 ## Layout
 
 ```text
@@ -57,7 +67,9 @@ python .\plugins\agent-optimization-runtime\examples\realistic_workflow_demo.py
 ├── scripts/
 │   └── run_all.py
 ├── shared/
-│   └── agent_runtime.py
+│   ├── agent_runtime.py
+│   └── workflow.py
+├── tests/
 ├── techniques/
 │   └── <technique_name>/
 │       ├── README.md
@@ -85,11 +97,36 @@ Use these folders when you want to understand or copy one pattern quickly.
 Contains the lightweight local runtime used by the examples:
 
 - `Agent`: wraps a task handler and returns structured output.
+- `AgentResult`: typed result object for agent output.
 - `SimpleCache`: small cache helper for caching examples.
 - `Telemetry`: records latency, errors, and cache hit ratio.
 - validators, routing helpers, hashing helpers, and message compaction helpers.
+- `workflow.py`: reusable `Pipeline`, `Step`, `ParallelFanOut`,
+  `ApprovalGate`, and `StateMachine` primitives.
 
 This is intentionally simple so the optimization logic stays visible.
+
+### `agentopt.py`
+
+Command-line helper for exploring the project:
+
+```powershell
+python .\agentopt.py list
+python .\agentopt.py run <technique_name>
+python .\agentopt.py run-all
+python .\agentopt.py explain <technique_name>
+python .\agentopt.py plugin-demo
+python .\agentopt.py generate-index
+```
+
+### `tests/`
+
+Contains standard-library `unittest` coverage for the shared runtime and plugin
+workflow.
+
+```powershell
+python -m unittest discover -s tests
+```
 
 ### `plugins/agent-optimization-runtime/`
 
@@ -198,12 +235,19 @@ the folder, verify everything:
 python .\scripts\run_all.py
 ```
 
+Then regenerate the index:
+
+```powershell
+python .\agentopt.py generate-index
+```
+
 ## Notes
 
 - The project uses only the Python standard library.
 - No API keys are required for the local examples.
 - The plugin includes realistic adapter shapes, but the real SDK calls are left
-  for your production environment.
+  for your production environment. Standard-library HTTP adapters are included
+  for OpenAI-compatible endpoints.
 - Keep orchestration deterministic: let code handle routing, retries,
   validation, cache, approval, and safety; let the model handle language and
   reasoning.
