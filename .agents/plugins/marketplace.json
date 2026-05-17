@@ -1,0 +1,20 @@
+{
+  "name": "local-agent-optimization-marketplace",
+  "interface": {
+    "displayName": "Local Agent Optimization Plugins"
+  },
+  "plugins": [
+    {
+      "name": "agent-optimization-runtime",
+      "source": {
+        "source": "local",
+        "path": "./plugins/agent-optimization-runtime"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

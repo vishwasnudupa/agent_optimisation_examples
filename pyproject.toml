@@ -1,0 +1,8 @@
+[project]
+name = "enterprise-agentic-workflow-optimization-examples"
+version = "0.1.0"
+description = "Runnable mini examples for production multi-agent optimization techniques."
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 100

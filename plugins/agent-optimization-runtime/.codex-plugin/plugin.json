@@ -1,0 +1,32 @@
+{
+  "name": "agent-optimization-runtime",
+  "version": "0.1.0",
+  "description": "Realistic agent workflow optimization templates for provider-backed production systems.",
+  "author": {
+    "name": "Local Workspace",
+    "email": "local@example.com",
+    "url": "https://example.com"
+  },
+  "homepage": "https://example.com/agent-optimization-runtime",
+  "repository": "https://example.com/agent-optimization-runtime",
+  "license": "MIT",
+  "keywords": ["agents", "optimization", "langgraph", "temporal", "routing", "validation"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Optimization Runtime",
+    "shortDescription": "Production-style templates for optimized agent workflows.",
+    "longDescription": "Provides realistic provider-backed patterns for routing, structured outputs, caching, validation, HITL gates, telemetry, and deterministic agent orchestration.",
+    "developerName": "Local Workspace",
+    "category": "Productivity",
+    "capabilities": ["Write", "Interactive"],
+    "websiteURL": "https://example.com",
+    "privacyPolicyURL": "https://example.com/privacy",
+    "termsOfServiceURL": "https://example.com/terms",
+    "defaultPrompt": [
+      "Create a production agent workflow.",
+      "Add routing and validation to my agent.",
+      "Show a realistic optimized agent template."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
